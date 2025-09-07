@@ -16,6 +16,17 @@ class AgrovetRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = AgrovetRegistrationSerializer
     permission_classes = [AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        
+        # Return both user and agrovet data
+        return Response({
+            'user': UserSerializer(user).data,
+            'agrovet': AgrovetSerializer(user.agrovet_profile).data
+        }, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from .models import User, Agrovet, Farmer
+from django.core.mail import send_mail
+from django.conf import settings
+import secrets
+import string
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,9 +22,9 @@ class AgrovetSerializer(serializers.ModelSerializer):
 class AgrovetRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
-    business_name = serializers.CharField()
-    registration_number = serializers.CharField()
-    location = serializers.CharField()
+    business_name = serializers.CharField(write_only=True)
+    registration_number = serializers.CharField(write_only=True)
+    location = serializers.CharField(write_only=True)
     
     class Meta:
         model = User
@@ -104,11 +108,12 @@ class FarmerRegistrationSerializer(serializers.ModelSerializer):
         self.send_password_email(user, password, agrovet)
         
         return farmer
-    
+    # generate a secure random password
     def generate_random_password(self, length=12):
         characters = string.ascii_letters + string.digits + "!@#$%^&*"
         return ''.join(secrets.choice(characters) for _ in range(length))
     
+    # Send email with credentials
     def send_password_email(self, user, password, agrovet):
         subject = 'Your Farmer Account Credentials'
         message = f"""
@@ -136,6 +141,7 @@ class FarmerRegistrationSerializer(serializers.ModelSerializer):
             fail_silently=False,
         )
 
+# Login Serializer
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
@@ -153,7 +159,7 @@ class LoginSerializer(serializers.Serializer):
             attrs['user'] = user
             return attrs
         raise serializers.ValidationError('Must include email and password')
-
+# Password Reset Serializer
 class PasswordResetSerializer(serializers.Serializer):
     new_password = serializers.CharField(min_length=8)
     new_password2 = serializers.CharField(min_length=8)
