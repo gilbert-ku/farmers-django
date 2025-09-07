@@ -612,7 +612,8 @@ SIMPLE_JWT = {
 
 - **Documentation**: Check this README
 - **Issues**: Create GitHub issues for bugs
-- **Email**: support@yourproject.com
+- **Email**: gilbert45ku@gmail.com
+- **Call**: 0726545820
 
 ## 📄 License
 
@@ -626,4 +627,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ---
 
-**Made with ❤️ for the farming community**
+**Made with ❤️[gilbert-ku] for the farming community**
